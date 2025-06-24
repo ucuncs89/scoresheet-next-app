@@ -179,7 +179,7 @@ export default function Scoresheet() {
       <Head>
         <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
       </Head>
-      <div className="max-w-lg mx-auto p-2 sm:p-4 bg-white dark:bg-zinc-900 rounded-lg shadow-lg mt-4">
+      <div className="max-w-12lg mx-auto p-2 sm:p-4 bg-white dark:bg-zinc-900 rounded-lg shadow-lg mt-4">
         {/* <h1 className="text-xl font-bold mb-4 text-center">Score</h1> */}
         <div className="flex flex-col sm:flex-row gap-2 mb-4 items-center justify-between">
           <button
@@ -263,6 +263,7 @@ export default function Scoresheet() {
           <table className="min-w-full border border-gray-200 dark:border-zinc-700 rounded-lg text-xs">
             <thead>
               <tr className="bg-gray-100 dark:bg-zinc-800">
+                <th className="px-2 py-1 text-center">#</th>
                 {players.map((p, idx) => (
                   <th key={idx} className="px-2 py-1 text-center relative group">
                     <input
@@ -286,15 +287,16 @@ export default function Scoresheet() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={players.length + 1} className="text-center py-2 text-gray-500">Loading...</td>
+                  <td colSpan={players.length + 2} className="text-center py-2 text-gray-500">Loading...</td>
                 </tr>
               ) : scores.length === 0 ? (
                 <tr>
-                  <td colSpan={players.length + 1} className="text-center py-2 text-gray-500">No data yet.</td>
+                  <td colSpan={players.length + 2} className="text-center py-2 text-gray-500">No data yet.</td>
                 </tr>
               ) : (
                 scores.map((row, rowIdx) => (
                   <tr key={rowIdx} className="border-t border-gray-200 dark:border-zinc-700">
+                    <td className="px-2 py-1 text-center font-bold">{rowIdx + 1}</td>
                     {row.map((cell, colIdx) => (
                       <td key={colIdx} className="px-2 py-1 text-center">
                         <input
@@ -323,6 +325,7 @@ export default function Scoresheet() {
             {players.length > 0 && (
               <tfoot>
                 <tr className="bg-gray-200 dark:bg-zinc-800 font-bold">
+                  <td className="px-2 py-1"></td>
                   {summary.map((sum, idx) => (
                     <td key={idx} className="px-2 py-1 text-center">{sum}</td>
                   ))}
