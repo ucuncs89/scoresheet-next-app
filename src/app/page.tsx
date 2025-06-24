@@ -1,6 +1,8 @@
 // Dynamic Scoresheet Spreadsheet - Players as columns, rounds as rows, summary footer, new game, responsive forms, better UI, icon buttons, neg/pos toggle
 "use client";
 import { useEffect, useState } from "react";
+import Head from "next/head";
+import { RiAddLine, RiDeleteBinLine, RiRefreshLine, RiSubtractLine } from '@remixicon/react';
 
 interface SheetData {
   players: string[];
@@ -174,6 +176,9 @@ export default function Scoresheet() {
 
   return (
     <>
+      <Head>
+        <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
+      </Head>
       <div className="max-w-12xl mx-auto p-4 sm:p-8 bg-white dark:bg-zinc-900 rounded-lg shadow-lg mt-8">
         {/* <h1 className="text-2xl font-bold mb-6 text-center">Score</h1> */}
         <div className="flex flex-col sm:flex-row gap-4 mb-6 items-center justify-between">
@@ -182,7 +187,7 @@ export default function Scoresheet() {
             className="flex items-center justify-center gap-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition w-full sm:w-auto mb-2 sm:mb-0 shadow"
             disabled={resetting}
           >
-            <span role="img" aria-label="new game">🆕</span> {resetting ? "Resetting..." : "New Game"}
+            <RiRefreshLine className="w-5 h-5" /> {resetting ? "Resetting..." : "New Game"}
           </button>
           <div className="flex flex-col sm:flex-row gap-4 w-full">
             {/* Form tambah player */}
@@ -206,7 +211,7 @@ export default function Scoresheet() {
                         onClick={() => handleDeletePlayer(idx)}
                         aria-label={`Remove ${p}`}
                       >
-                        <span role="img" aria-label="delete">🗑️</span>
+                        <RiDeleteBinLine className="w-4 h-4" />
                       </button>
                     </span>
                   ))}
@@ -216,7 +221,7 @@ export default function Scoresheet() {
                 type="submit"
                 className="flex items-center justify-center gap-1 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition w-full sm:w-auto shadow"
               >
-                <span role="img" aria-label="add">➕</span> Add
+                <RiAddLine className="w-5 h-5" /> Add
               </button>
             </form>
             {/* Form tambah skor per ronde */}
@@ -231,7 +236,7 @@ export default function Scoresheet() {
                         onClick={() => handleToggleSign(idx)}
                         className={`flex items-center justify-center px-2 py-2 rounded border transition shadow ${scoreSigns[idx] === -1 ? 'bg-red-100 text-red-600 border-red-300 dark:bg-zinc-900 dark:text-red-400' : 'bg-gray-100 text-gray-700 border-gray-300 dark:bg-zinc-900 dark:text-gray-200'}`}
                       >
-                        {scoreSigns[idx] === -1 ? <span role="img" aria-label="minus">➖</span> : <span role="img" aria-label="plus">➕</span>}
+                        <RiSubtractLine className={`w-5 h-5 ${scoreSigns[idx] === -1 ? 'text-red-600' : 'text-gray-700'}`} />
                       </button>
                       <input
                         className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-green-400 dark:bg-zinc-900 dark:text-white"
@@ -249,7 +254,7 @@ export default function Scoresheet() {
                 className="flex items-center justify-center gap-1 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition w-full sm:w-auto shadow"
                 disabled={players.length === 0}
               >
-                <span role="img" aria-label="add">➕</span> Add Round
+                <RiAddLine className="w-5 h-5" /> Add Round
               </button>
             </form>
           </div>
@@ -271,7 +276,7 @@ export default function Scoresheet() {
                       title="Delete Player"
                       type="button"
                     >
-                      <span role="img" aria-label="delete">🗑️</span>
+                      <RiDeleteBinLine className="w-4 h-4" />
                     </button>
                   </th>
                 ))}
@@ -307,7 +312,7 @@ export default function Scoresheet() {
                         aria-label={`Delete round ${rowIdx + 1}`}
                         type="button"
                       >
-                        <span role="img" aria-label="delete">🗑️</span>
+                        <RiDeleteBinLine className="w-4 h-4" />
                       </button>
                     </td>
                   </tr>
