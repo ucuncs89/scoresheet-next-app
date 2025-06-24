@@ -184,7 +184,7 @@ export default function Scoresheet() {
         <div className="flex flex-col sm:flex-row gap-4 mb-6 items-center justify-between">
           <button
             onClick={handleNewGame}
-            className="flex items-center justify-center gap-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition w-full sm:w-auto mb-2 sm:mb-0 shadow"
+            className="flex items-center justify-center gap-2 bg-pink-500 text-white px-4 py-2 rounded hover:bg-red-700 transition w-full sm:w-auto mb-2 sm:mb-0 shadow"
             disabled={resetting}
           >
             <RiRefreshLine className="w-5 h-5" /> {resetting ? "Resetting..." : "New Game"}
@@ -219,7 +219,7 @@ export default function Scoresheet() {
               </div>
               <button
                 type="submit"
-                className="flex items-center justify-center gap-1 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition w-full sm:w-auto shadow"
+                className="flex items-center justify-center gap-1 bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-700 transition w-full sm:w-auto shadow"
               >
                 <RiAddLine className="w-5 h-5" /> Add
               </button>
@@ -251,7 +251,7 @@ export default function Scoresheet() {
               </div>
               <button
                 type="submit"
-                className="flex items-center justify-center gap-1 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition w-full sm:w-auto shadow"
+                className="flex items-center justify-center gap-1 bg-emerald-500 text-white px-4 py-2 rounded hover:bg-emerald-700 transition w-full sm:w-auto shadow"
                 disabled={players.length === 0}
               >
                 <RiAddLine className="w-5 h-5" /> Add Round
