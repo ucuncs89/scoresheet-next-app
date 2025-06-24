@@ -28,7 +28,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <nav className="w-full flex justify-center py-4 bg-gray-100 dark:bg-zinc-800 mb-4">
-          <a href="/" className="text-blue-600 hover:underline font-semibold">Scoresheet</a>
+          <a href="/" className="text-indigo-600 hover:underline font-semibold">Scoresheet</a>
         </nav>
         {children}
       </body>
