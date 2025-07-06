@@ -2,7 +2,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Head from "next/head";
-import { RiAddLine, RiDeleteBinLine, RiRefreshLine, RiSubtractLine } from '@remixicon/react';
+import { RiAddLine, RiDeleteBinLine, RiRefreshLine, RiSubtractLine, RiMenuLine, RiCloseLine } from '@remixicon/react';
 
 interface SheetData {
   players: string[];
@@ -31,7 +31,7 @@ async function getSheet(): Promise<SheetData> {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readonly");
-    const store = tx.objectStore(STORE_NAME);
+    const store = tx.objectStore(STORE_NAME)
     const req = store.get("main");
     req.onsuccess = () => {
       if (req.result) resolve(req.result.data as SheetData);
@@ -81,6 +81,7 @@ export default function Scoresheet() {
   // Neg/pos state for each input in round form
   const [scoreSigns, setScoreSigns] = useState<(1 | -1)[]>([]);
   const [showRemovePlayer, setShowRemovePlayer] = useState(false);
+  const [showBottomSheet, setShowBottomSheet] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -179,9 +180,90 @@ export default function Scoresheet() {
       <Head>
         <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
       </Head>
+      {/* Bottom Sheet Trigger for mobile */}
+      <div className="fixed bottom-4 right-4 z-50 sm:hidden">
+        <button
+          className="bg-indigo-500 text-white p-3 rounded-full shadow-lg focus:outline-none"
+          onClick={() => setShowBottomSheet(true)}
+          aria-label="Open Menu"
+        >
+          <RiMenuLine className="w-6 h-6" />
+        </button>
+      </div>
+      {/* Bottom Sheet Overlay */}
+      {showBottomSheet && (
+        <div className="fixed inset-0 z-50 flex items-end sm:hidden">
+          <div className="absolute inset-0 bg-black bg-opacity-40" onClick={() => setShowBottomSheet(false)}></div>
+          <div className="relative w-full bg-white dark:bg-zinc-900 rounded-t-2xl shadow-lg p-4 animate-slideup">
+            <button
+              className="absolute top-2 right-4 text-gray-400 hover:text-gray-700 dark:hover:text-white"
+              onClick={() => setShowBottomSheet(false)}
+              aria-label="Close Menu"
+            >
+              <RiCloseLine className="w-6 h-6" />
+            </button>
+            {/* Menu content in bottom sheet (copy from top menu) */}
+            <div className="flex flex-col gap-4 mt-6">
+              <button
+                onClick={handleNewGame}
+                className="flex items-center justify-center gap-2 bg-pink-500 text-white px-4 py-2 rounded hover:bg-red-700 transition shadow text-base"
+                disabled={resetting}
+              >
+                <RiRefreshLine className="w-5 h-5" /> {resetting ? "Resetting..." : "New Game"}
+              </button>
+              {/* Add Player Form */}
+              <form onSubmit={handleAddPlayer} className="flex gap-2 bg-blue-50 dark:bg-zinc-800 border border-blue-200 dark:border-zinc-700 rounded-lg p-2 shadow text-base">
+                <input
+                  className="flex-1 px-2 py-1 border rounded focus:outline-none focus:ring focus:border-blue-400 dark:bg-zinc-900 dark:text-white"
+                  placeholder="Player Name"
+                  value={newPlayer}
+                  onChange={e => setNewPlayer(e.target.value)}
+                />
+                <button type="submit" className="flex items-center gap-1 bg-indigo-500 text-white px-3 py-1.5 rounded hover:bg-indigo-700 transition shadow">
+                  <RiAddLine className="w-5 h-5" /> Add
+                </button>
+              </form>
+              {/* Add Round Form */}
+              <form onSubmit={handleAddRound} className="flex flex-col gap-2 bg-green-50 dark:bg-zinc-800 border border-green-200 dark:border-zinc-700 rounded-lg p-2 shadow text-base">
+                <div className="flex flex-col sm:flex-row gap-2">
+                  {players.map((p, idx) => (
+                    <div key={idx} className="flex flex-col flex-1">
+                      <label className="block text-xs font-medium mb-1">{p}</label>
+                      <div className="flex flex-row gap-1 items-center">
+                        <button
+                          type="button"
+                          onClick={() => handleToggleSign(idx)}
+                          className={`flex items-center justify-center px-1.5 py-1.5 rounded border transition shadow ${scoreSigns[idx] === -1 ? 'bg-red-100 text-red-600 border-red-300 dark:bg-zinc-900 dark:text-red-400' : 'bg-gray-100 text-gray-700 border-gray-300 dark:bg-zinc-900 dark:text-gray-200'}`}
+                        >
+                          <RiSubtractLine className={`w-4 h-4 ${scoreSigns[idx] === -1 ? 'text-red-600' : 'text-gray-700'}`} />
+                        </button>
+                        <input
+                          className="w-full px-2 py-1 border rounded focus:outline-none focus:ring focus:border-green-400 dark:bg-zinc-900 dark:text-white"
+                          type="number"
+                          placeholder="Score"
+                          value={newScores[idx] ? (scoreSigns[idx] === -1 && newScores[idx] !== '' ? '-' + newScores[idx].replace(/^-/, '') : newScores[idx].replace(/^-/, '')) : ''}
+                          onChange={e => handleInputChange(idx, e.target.value.replace(/^-/, ''))}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="submit"
+                  className="flex items-center justify-center gap-1 bg-emerald-500 text-white px-3 py-1.5 rounded hover:bg-emerald-700 transition shadow"
+                  disabled={players.length === 0}
+                >
+                  <RiAddLine className="w-5 h-5" /> Add Round
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Main content, hide top menu on mobile */}
       <div className="max-w-12lg mx-auto p-2 sm:p-4 bg-white dark:bg-zinc-900 rounded-lg shadow-lg mt-4">
         {/* <h1 className="text-xl font-bold mb-4 text-center">Score</h1> */}
-        <div className="flex flex-col sm:flex-row gap-2 mb-4 items-center justify-between">
+        <div className="flex flex-col sm:flex-row gap-2 mb-4 items-center justify-between sm:visible invisible h-0 sm:h-auto">
           <button
             onClick={handleNewGame}
             className="flex items-center justify-center gap-1 bg-pink-500 text-white px-3 py-1.5 rounded hover:bg-red-700 transition w-full sm:w-auto mb-2 sm:mb-0 shadow text-sm"
@@ -339,6 +421,15 @@ export default function Scoresheet() {
       <footer className="mt-4 text-center text-xs text-gray-400">
         &copy; ucun.dev
       </footer>
+      <style jsx global>{`
+        @keyframes slideup {
+          from { transform: translateY(100%); }
+          to { transform: translateY(0); }
+        }
+        .animate-slideup {
+          animation: slideup 0.25s cubic-bezier(0.4,0,0.2,1);
+        }
+      `}</style>
     </>
   );
 }
