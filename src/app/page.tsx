@@ -2,7 +2,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import Head from "next/head";
-import { RiAddLine, RiDeleteBinLine, RiRefreshLine, RiSubtractLine, RiMenuLine, RiCloseLine } from '@remixicon/react';
+import {
+  RiAddLine,
+  RiDeleteBinLine,
+  RiRefreshLine,
+  RiSubtractLine,
+  RiMenuLine,
+  RiCloseLine,
+} from "@remixicon/react";
 
 interface SheetData {
   players: string[];
@@ -31,7 +38,7 @@ async function getSheet(): Promise<SheetData> {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readonly");
-    const store = tx.objectStore(STORE_NAME)
+    const store = tx.objectStore(STORE_NAME);
     const req = store.get("main");
     req.onsuccess = () => {
       if (req.result) resolve(req.result.data as SheetData);
@@ -108,7 +115,7 @@ export default function Scoresheet() {
     e.preventDefault();
     if (!newPlayer.trim()) return;
     const updatedPlayers = [...players, newPlayer.trim()];
-    const updatedScores = scores.map(row => [...row, 0]);
+    const updatedScores = scores.map((row) => [...row, 0]);
     await updateSheet(updatedPlayers, updatedScores);
     setNewPlayer("");
   }
@@ -117,7 +124,7 @@ export default function Scoresheet() {
   async function handleAddRound(e: React.FormEvent) {
     e.preventDefault();
     if (players.length === 0) return;
-    if (newScores.some(s => s.trim() === "")) return;
+    if (newScores.some((s) => s.trim() === "")) return;
     const round = newScores.map((s, i) => (scoreSigns[i] || 1) * Number(s));
     const updatedScores = [...scores, round];
     await updateSheet(players, updatedScores);
@@ -132,9 +139,15 @@ export default function Scoresheet() {
   }
 
   // Edit score cell
-  async function handleEditScore(rowIdx: number, colIdx: number, value: string) {
+  async function handleEditScore(
+    rowIdx: number,
+    colIdx: number,
+    value: string
+  ) {
     const updatedScores = scores.map((row, r) =>
-      row.map((cell, c) => (r === rowIdx && c === colIdx ? Number(value) : cell))
+      row.map((cell, c) =>
+        r === rowIdx && c === colIdx ? Number(value) : cell
+      )
     );
     await updateSheet(players, updatedScores);
   }
@@ -142,7 +155,7 @@ export default function Scoresheet() {
   // Delete player (column)
   async function handleDeletePlayer(idx: number) {
     const updatedPlayers = players.filter((_, i) => i !== idx);
-    const updatedScores = scores.map(row => row.filter((_, i) => i !== idx));
+    const updatedScores = scores.map((row) => row.filter((_, i) => i !== idx));
     await updateSheet(updatedPlayers, updatedScores);
   }
 
@@ -165,12 +178,14 @@ export default function Scoresheet() {
 
   // Toggle sign for input
   function handleToggleSign(idx: number) {
-    setScoreSigns(signs => signs.map((s, i) => (i === idx ? (s === 1 ? -1 : 1) : s)));
+    setScoreSigns((signs) =>
+      signs.map((s, i) => (i === idx ? (s === 1 ? -1 : 1) : s))
+    );
   }
 
   // Update input value
   function handleInputChange(idx: number, value: string) {
-    setNewScores(ns => ns.map((v, i) => (i === idx ? value : v)));
+    setNewScores((ns) => ns.map((v, i) => (i === idx ? value : v)));
   }
 
   const summary = getSummary(scores, players);
@@ -178,7 +193,10 @@ export default function Scoresheet() {
   return (
     <>
       <Head>
-        <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
+        <link
+          href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+          rel="stylesheet"
+        />
       </Head>
       {/* Bottom Sheet Trigger for mobile */}
       <div className="fixed bottom-4 right-4 z-50 sm:hidden">
@@ -193,7 +211,10 @@ export default function Scoresheet() {
       {/* Bottom Sheet Overlay */}
       {showBottomSheet && (
         <div className="fixed inset-0 z-50 flex items-end sm:hidden">
-          <div className="absolute inset-0 bg-black bg-opacity-40" onClick={() => setShowBottomSheet(false)}></div>
+          <div
+            className="absolute inset-0 bg-black bg-opacity-40"
+            onClick={() => setShowBottomSheet(false)}
+          ></div>
           <div className="relative w-full bg-white dark:bg-zinc-900 rounded-t-2xl shadow-lg p-4 animate-slideup">
             <button
               className="absolute top-2 right-4 text-gray-400 hover:text-gray-700 dark:hover:text-white"
@@ -209,40 +230,73 @@ export default function Scoresheet() {
                 className="flex items-center justify-center gap-2 bg-pink-500 text-white px-4 py-2 rounded hover:bg-red-700 transition shadow text-base"
                 disabled={resetting}
               >
-                <RiRefreshLine className="w-5 h-5" /> {resetting ? "Resetting..." : "New Game"}
+                <RiRefreshLine className="w-5 h-5" />{" "}
+                {resetting ? "Resetting..." : "New Game"}
               </button>
               {/* Add Player Form */}
-              <form onSubmit={handleAddPlayer} className="flex gap-2 bg-blue-50 dark:bg-zinc-800 border border-blue-200 dark:border-zinc-700 rounded-lg p-2 shadow text-base">
+              <form
+                onSubmit={handleAddPlayer}
+                className="flex gap-2 bg-blue-50 dark:bg-zinc-800 border border-blue-200 dark:border-zinc-700 rounded-lg p-2 shadow text-base"
+              >
                 <input
                   className="flex-1 px-2 py-1 border rounded focus:outline-none focus:ring focus:border-blue-400 dark:bg-zinc-900 dark:text-white"
                   placeholder="Player Name"
                   value={newPlayer}
-                  onChange={e => setNewPlayer(e.target.value)}
+                  onChange={(e) => setNewPlayer(e.target.value)}
                 />
-                <button type="submit" className="flex items-center gap-1 bg-indigo-500 text-white px-3 py-1.5 rounded hover:bg-indigo-700 transition shadow">
+                <button
+                  type="submit"
+                  className="flex items-center gap-1 bg-indigo-500 text-white px-3 py-1.5 rounded hover:bg-indigo-700 transition shadow"
+                >
                   <RiAddLine className="w-5 h-5" /> Add
                 </button>
               </form>
               {/* Add Round Form */}
-              <form onSubmit={handleAddRound} className="flex flex-col gap-2 bg-green-50 dark:bg-zinc-800 border border-green-200 dark:border-zinc-700 rounded-lg p-2 shadow text-base">
+              <form
+                onSubmit={handleAddRound}
+                className="flex flex-col gap-2 bg-green-50 dark:bg-zinc-800 border border-green-200 dark:border-zinc-700 rounded-lg p-2 shadow text-base"
+              >
                 <div className="flex flex-col sm:flex-row gap-2">
                   {players.map((p, idx) => (
                     <div key={idx} className="flex flex-col flex-1">
-                      <label className="block text-xs font-medium mb-1">{p}</label>
+                      <label className="block text-xs font-medium mb-1">
+                        {p}
+                      </label>
                       <div className="flex flex-row gap-1 items-center">
                         <button
                           type="button"
                           onClick={() => handleToggleSign(idx)}
-                          className={`flex items-center justify-center px-1.5 py-1.5 rounded border transition shadow ${scoreSigns[idx] === -1 ? 'bg-red-100 text-red-600 border-red-300 dark:bg-zinc-900 dark:text-red-400' : 'bg-gray-100 text-gray-700 border-gray-300 dark:bg-zinc-900 dark:text-gray-200'}`}
+                          className={`flex items-center justify-center px-1.5 py-1.5 rounded border transition shadow ${
+                            scoreSigns[idx] === -1
+                              ? "bg-red-100 text-red-600 border-red-300 dark:bg-zinc-900 dark:text-red-400"
+                              : "bg-gray-100 text-gray-700 border-gray-300 dark:bg-zinc-900 dark:text-gray-200"
+                          }`}
                         >
-                          <RiSubtractLine className={`w-4 h-4 ${scoreSigns[idx] === -1 ? 'text-red-600' : 'text-gray-700'}`} />
+                          <RiSubtractLine
+                            className={`w-4 h-4 ${
+                              scoreSigns[idx] === -1
+                                ? "text-red-600"
+                                : "text-gray-700"
+                            }`}
+                          />
                         </button>
                         <input
                           className="w-full px-2 py-1 border rounded focus:outline-none focus:ring focus:border-green-400 dark:bg-zinc-900 dark:text-white"
                           type="number"
                           placeholder="Score"
-                          value={newScores[idx] ? (scoreSigns[idx] === -1 && newScores[idx] !== '' ? '-' + newScores[idx].replace(/^-/, '') : newScores[idx].replace(/^-/, '')) : ''}
-                          onChange={e => handleInputChange(idx, e.target.value.replace(/^-/, ''))}
+                          value={
+                            newScores[idx]
+                              ? scoreSigns[idx] === -1 && newScores[idx] !== ""
+                                ? "-" + newScores[idx].replace(/^-/, "")
+                                : newScores[idx].replace(/^-/, "")
+                              : ""
+                          }
+                          onChange={(e) =>
+                            handleInputChange(
+                              idx,
+                              e.target.value.replace(/^-/, "")
+                            )
+                          }
                         />
                       </div>
                     </div>
@@ -269,23 +323,32 @@ export default function Scoresheet() {
             className="flex items-center justify-center gap-1 bg-pink-500 text-white px-3 py-1.5 rounded hover:bg-red-700 transition w-full sm:w-auto mb-2 sm:mb-0 shadow text-sm"
             disabled={resetting}
           >
-            <RiRefreshLine className="w-4 h-4" /> {resetting ? "Resetting..." : "New Game"}
+            <RiRefreshLine className="w-4 h-4" />{" "}
+            {resetting ? "Resetting..." : "New Game"}
           </button>
           <div className="flex flex-col sm:flex-row gap-2 w-full">
             {/* Form tambah player */}
-            <form onSubmit={handleAddPlayer} className="flex flex-col sm:flex-row gap-1 w-full sm:w-auto bg-blue-50 dark:bg-zinc-800 border border-blue-200 dark:border-zinc-700 rounded-lg p-2 shadow text-sm">
+            <form
+              onSubmit={handleAddPlayer}
+              className="flex flex-col sm:flex-row gap-1 w-full sm:w-auto bg-blue-50 dark:bg-zinc-800 border border-blue-200 dark:border-zinc-700 rounded-lg p-2 shadow text-sm"
+            >
               <div className="flex-1">
-                <label className="block text-xs font-medium mb-1">Add Player</label>
+                <label className="block text-xs font-medium mb-1">
+                  Add Player
+                </label>
                 <input
                   className="w-full px-2 py-1 border rounded focus:outline-none focus:ring focus:border-blue-400 dark:bg-zinc-900 dark:text-white text-sm"
                   placeholder="Player Name"
                   value={newPlayer}
-                  onChange={e => setNewPlayer(e.target.value)}
+                  onChange={(e) => setNewPlayer(e.target.value)}
                 />
                 {/* Chips for existing players with remove button */}
                 <div className="flex flex-wrap gap-1 mt-1">
                   {players.map((p, idx) => (
-                    <span key={idx} className="flex items-center bg-blue-100 dark:bg-zinc-700 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full text-xs font-medium">
+                    <span
+                      key={idx}
+                      className="flex items-center bg-blue-100 dark:bg-zinc-700 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full text-xs font-medium"
+                    >
                       {p}
                       <button
                         type="button"
@@ -306,26 +369,53 @@ export default function Scoresheet() {
                 <RiAddLine className="w-4 h-4" /> Add
               </button>
             </form>
+
             {/* Form tambah skor per ronde */}
-            <form onSubmit={handleAddRound} className="flex flex-col sm:flex-row gap-1 w-full sm:w-auto flex-1 bg-green-50 dark:bg-zinc-800 border border-green-200 dark:border-zinc-700 rounded-lg p-2 shadow text-sm">
+            <form
+              onSubmit={handleAddRound}
+              className="flex flex-col sm:flex-row gap-1 w-full sm:w-auto flex-1 bg-green-50 dark:bg-zinc-800 border border-green-200 dark:border-zinc-700 rounded-lg p-2 shadow text-sm"
+            >
               <div className="flex flex-col sm:flex-row gap-1 flex-1">
                 {players.map((p, idx) => (
                   <div key={idx} className="flex flex-col flex-1">
-                    <label className="block text-xs font-medium mb-1">{p}</label>
+                    <label className="block text-xs font-medium mb-1">
+                      {p}
+                    </label>
                     <div className="flex flex-row gap-1 items-center">
                       <button
                         type="button"
                         onClick={() => handleToggleSign(idx)}
-                        className={`flex items-center justify-center px-1.5 py-1.5 rounded border transition shadow ${scoreSigns[idx] === -1 ? 'bg-red-100 text-red-600 border-red-300 dark:bg-zinc-900 dark:text-red-400' : 'bg-gray-100 text-gray-700 border-gray-300 dark:bg-zinc-900 dark:text-gray-200'}`}
+                        className={`flex items-center justify-center px-1.5 py-1.5 rounded border transition shadow ${
+                          scoreSigns[idx] === -1
+                            ? "bg-red-100 text-red-600 border-red-300 dark:bg-zinc-900 dark:text-red-400"
+                            : "bg-gray-100 text-gray-700 border-gray-300 dark:bg-zinc-900 dark:text-gray-200"
+                        }`}
                       >
-                        <RiSubtractLine className={`w-4 h-4 ${scoreSigns[idx] === -1 ? 'text-red-600' : 'text-gray-700'}`} />
+                        <RiSubtractLine
+                          className={`w-4 h-4 ${
+                            scoreSigns[idx] === -1
+                              ? "text-red-600"
+                              : "text-gray-700"
+                          }`}
+                        />
                       </button>
                       <input
                         className="w-full px-2 py-1 border rounded focus:outline-none focus:ring focus:border-green-400 dark:bg-zinc-900 dark:text-white text-sm"
                         type="number"
                         placeholder="Score"
-                        value={newScores[idx] ? (scoreSigns[idx] === -1 && newScores[idx] !== '' ? '-' + newScores[idx].replace(/^-/, '') : newScores[idx].replace(/^-/, '')) : ''}
-                        onChange={e => handleInputChange(idx, e.target.value.replace(/^-/, ''))}
+                        value={
+                          newScores[idx]
+                            ? scoreSigns[idx] === -1 && newScores[idx] !== ""
+                              ? "-" + newScores[idx].replace(/^-/, "")
+                              : newScores[idx].replace(/^-/, "")
+                            : ""
+                        }
+                        onChange={(e) =>
+                          handleInputChange(
+                            idx,
+                            e.target.value.replace(/^-/, "")
+                          )
+                        }
                       />
                     </div>
                   </div>
@@ -347,11 +437,14 @@ export default function Scoresheet() {
               <tr className="bg-gray-100 dark:bg-zinc-800">
                 <th className="px-2 py-1 text-center">#</th>
                 {players.map((p, idx) => (
-                  <th key={idx} className="px-2 py-1 text-center relative group">
+                  <th
+                    key={idx}
+                    className="px-2 py-1 text-center relative group"
+                  >
                     <input
                       className="w-full bg-transparent border-none text-center font-bold focus:ring-0 dark:text-white text-xs"
                       value={p}
-                      onChange={e => handleEditPlayer(idx, e.target.value)}
+                      onChange={(e) => handleEditPlayer(idx, e.target.value)}
                     />
                     <button
                       className="absolute -right-2 -top-2 text-xs text-red-500 opacity-0 group-hover:opacity-100 hover:text-red-700 bg-white dark:bg-zinc-900 rounded-full shadow p-1"
@@ -369,34 +462,52 @@ export default function Scoresheet() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={players.length + 2} className="text-center py-2 text-gray-500">Loading...</td>
+                  <td
+                    colSpan={players.length + 2}
+                    className="text-center py-2 text-gray-500"
+                  >
+                    Loading...
+                  </td>
                 </tr>
               ) : scores.length === 0 ? (
                 <tr>
-                  <td colSpan={players.length + 2} className="text-center py-2 text-gray-500">No data yet.</td>
+                  <td
+                    colSpan={players.length + 2}
+                    className="text-center py-2 text-gray-500"
+                  >
+                    No data yet.
+                  </td>
                 </tr>
               ) : (
                 scores.map((row, rowIdx) => (
-                  <tr key={rowIdx} className="border-t border-gray-200 dark:border-zinc-700">
-                    <td className="px-2 py-1 text-center font-bold">{rowIdx + 1}</td>
+                  <tr
+                    key={rowIdx}
+                    className="border-t border-gray-200 dark:border-zinc-700"
+                  >
+                    <td className="px-2 py-1 text-center font-bold">
+                      {rowIdx + 1}
+                    </td>
                     {row.map((cell, colIdx) => {
                       // Convert cell to string, handle negative and zero
-                      let cellValue = cell === 0 ? '' : String(cell);
+                      let cellValue = cell === 0 ? "" : String(cell);
                       return (
                         <td key={colIdx} className="px-2 py-1 text-center">
                           <input
                             className="w-full bg-transparent border-none text-center focus:ring-0 dark:text-white text-xs"
                             type="number"
                             value={cellValue}
-                            onChange={e => {
+                            onChange={(e) => {
                               let val = e.target.value;
                               // Remove leading zeros except for 0 or -0
                               if (/^-?0+\d+/.test(val)) {
-                                val = val.replace(/^-?0+/, val.startsWith('-') ? '-' : '');
+                                val = val.replace(
+                                  /^-?0+/,
+                                  val.startsWith("-") ? "-" : ""
+                                );
                               }
                               // Allow empty string
-                              if (val === '' || val === '-') {
-                                handleEditScore(rowIdx, colIdx, '0');
+                              if (val === "" || val === "-") {
+                                handleEditScore(rowIdx, colIdx, "0");
                               } else {
                                 handleEditScore(rowIdx, colIdx, val);
                               }
@@ -409,7 +520,7 @@ export default function Scoresheet() {
                     })}
                     <td className="px-2 py-1 text-right">
                       <button
-                        className="flex items-center justify-center bg-gray-200 dark:bg-zinc-700 text-red-500 hover:text-red-700 rounded-full shadow p-1 hover:bg-gray-300 dark:hover:bg-zinc-600 transition"
+                        className="flex items-center  justify-center bg-gray-200 dark:bg-zinc-700 text-red-500 hover:text-red-700 rounded-full shadow p-1 hover:bg-gray-300 dark:hover:bg-zinc-600 transition"
                         onClick={() => handleDeleteRound(rowIdx)}
                         aria-label={`Delete round ${rowIdx + 1}`}
                         type="button"
@@ -427,7 +538,9 @@ export default function Scoresheet() {
                 <tr className="bg-gray-200 dark:bg-zinc-800 font-bold">
                   <td className="px-2 py-1"></td>
                   {summary.map((sum, idx) => (
-                    <td key={idx} className="px-2 py-1 text-center">{sum}</td>
+                    <td key={idx} className="px-2 py-1 text-center">
+                      {sum}
+                    </td>
                   ))}
                   <td className="px-2 py-1 text-right text-gray-500">Total</td>
                 </tr>
@@ -436,16 +549,17 @@ export default function Scoresheet() {
           </table>
         </div>
       </div>
-      <footer className="mt-4 text-center text-xs text-gray-400">
-        &copy; ucun.dev
-      </footer>
       <style jsx global>{`
         @keyframes slideup {
-          from { transform: translateY(100%); }
-          to { transform: translateY(0); }
+          from {
+            transform: translateY(100%);
+          }
+          to {
+            transform: translateY(0);
+          }
         }
         .animate-slideup {
-          animation: slideup 0.25s cubic-bezier(0.4,0,0.2,1);
+          animation: slideup 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
       `}</style>
     </>
