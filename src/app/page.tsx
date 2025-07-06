@@ -168,11 +168,12 @@ export default function Scoresheet() {
   // New Game (reset)
   async function handleNewGame() {
     setResetting(true);
-    await resetSheet();
-    setPlayers([]);
+    // Jangan reset player, hanya reset skor
+    const emptyScores = scores.map((row) => row.map(() => 0));
+    await saveSheet({ players, scores: [] });
     setScores([]);
-    setNewScores([]);
-    setScoreSigns([]);
+    setNewScores(players.map(() => ""));
+    setScoreSigns(players.map(() => 1));
     setResetting(false);
   }
 
@@ -490,10 +491,20 @@ export default function Scoresheet() {
                     {row.map((cell, colIdx) => {
                       // Convert cell to string, handle negative and zero
                       let cellValue = cell === 0 ? "" : String(cell);
+                      const isNegative = String(cellValue).startsWith("-");
                       return (
-                        <td key={colIdx} className="px-2 py-1 text-center">
+                        <td
+                          key={colIdx}
+                          className={`px-2 py-1 text-center ${
+                            isNegative ? "text-red-600 font-bold" : ""
+                          }`}
+                        >
                           <input
-                            className="w-full bg-transparent border-none text-center focus:ring-0 dark:text-white text-xs"
+                            className={`w-full bg-transparent border-none text-center focus:ring-0 text-xs ${
+                              isNegative
+                                ? "text-red-600 font-bold"
+                                : "dark:text-white"
+                            }`}
                             type="number"
                             value={cellValue}
                             onChange={(e) => {
@@ -538,7 +549,12 @@ export default function Scoresheet() {
                 <tr className="bg-gray-200 dark:bg-zinc-800 font-bold">
                   <td className="px-2 py-1"></td>
                   {summary.map((sum, idx) => (
-                    <td key={idx} className="px-2 py-1 text-center">
+                    <td
+                      key={idx}
+                      className={`px-2 py-1 text-center ${
+                        sum < 0 ? "text-red-600 font-bold" : "dark:text-white"
+                      }`}
+                    >
                       {sum}
                     </td>
                   ))}
