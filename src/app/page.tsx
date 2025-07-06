@@ -379,16 +379,34 @@ export default function Scoresheet() {
                 scores.map((row, rowIdx) => (
                   <tr key={rowIdx} className="border-t border-gray-200 dark:border-zinc-700">
                     <td className="px-2 py-1 text-center font-bold">{rowIdx + 1}</td>
-                    {row.map((cell, colIdx) => (
-                      <td key={colIdx} className="px-2 py-1 text-center">
-                        <input
-                          className="w-full bg-transparent border-none text-center focus:ring-0 dark:text-white text-xs"
-                          type="number"
-                          value={cell}
-                          onChange={e => handleEditScore(rowIdx, colIdx, e.target.value)}
-                        />
-                      </td>
-                    ))}
+                    {row.map((cell, colIdx) => {
+                      // Convert cell to string, handle negative and zero
+                      let cellValue = cell === 0 ? '' : String(cell);
+                      return (
+                        <td key={colIdx} className="px-2 py-1 text-center">
+                          <input
+                            className="w-full bg-transparent border-none text-center focus:ring-0 dark:text-white text-xs"
+                            type="number"
+                            value={cellValue}
+                            onChange={e => {
+                              let val = e.target.value;
+                              // Remove leading zeros except for 0 or -0
+                              if (/^-?0+\d+/.test(val)) {
+                                val = val.replace(/^-?0+/, val.startsWith('-') ? '-' : '');
+                              }
+                              // Allow empty string
+                              if (val === '' || val === '-') {
+                                handleEditScore(rowIdx, colIdx, '0');
+                              } else {
+                                handleEditScore(rowIdx, colIdx, val);
+                              }
+                            }}
+                            inputMode="numeric"
+                            pattern="^-?\\d*$"
+                          />
+                        </td>
+                      );
+                    })}
                     <td className="px-2 py-1 text-right">
                       <button
                         className="flex items-center justify-center bg-gray-200 dark:bg-zinc-700 text-red-500 hover:text-red-700 rounded-full shadow p-1 hover:bg-gray-300 dark:hover:bg-zinc-600 transition"
