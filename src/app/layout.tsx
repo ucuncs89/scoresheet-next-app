@@ -1,42 +1,78 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { Typography, Container, Box } from "@mui/material";
+import ThemeProvider from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
-  title: "Scoresheet",
-  description: "Scoresheet",
+    title: "Scoresheet",
+    description: "Dynamic scoresheet for tracking scores across multiple rounds and players",
 };
 
+function LayoutContent({ children }: { children: React.ReactNode }) {
+    return (
+        <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+            <Box
+                component="header"
+                sx={{
+                    bgcolor: "background.paper",
+                    borderBottom: 1,
+                    borderColor: "divider",
+                    py: 1.5,
+                }}
+            >
+                <Container maxWidth="xl">
+                    <Typography
+                        variant="h5"
+                        component="h1"
+                        align="center"
+                        sx={{
+                            fontWeight: 700,
+                            color: "primary.main",
+                            letterSpacing: 0.5,
+                        }}
+                    >
+                        Scoresheet
+                    </Typography>
+                </Container>
+            </Box>
+
+            <Box component="main" sx={{ flexGrow: 1, py: 3 }}>
+                <Container maxWidth="xl">{children}</Container>
+            </Box>
+
+            <Box
+                component="footer"
+                sx={{
+                    py: 2,
+                    px: 2,
+                    mt: "auto",
+                    borderTop: 1,
+                    borderColor: "divider",
+                    backgroundColor: "background.paper",
+                }}
+            >
+                <Container maxWidth="xl">
+                    <Typography variant="caption" color="text.secondary" align="center" display="block">
+                        &copy; ucun.dev
+                    </Typography>
+                </Container>
+            </Box>
+        </Box>
+    );
+}
+
 export default function RootLayout({
-  children,
+    children,
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <nav className="w-full flex justify-center py-4 bg-gray-100 dark:bg-zinc-800 mb-4">
-          <a href="/" className="text-indigo-600 hover:underline font-semibold">
-            Scoresheet
-          </a>
-        </nav>
-        <main>{children}</main>
-        <footer className="w-full text-center text-xs text-gray-400 py-4 bg-transparent mt-auto border-t border-gray-200 dark:border-zinc-800">
-          &copy; ucun.dev
-        </footer>
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en">
+            <body className="antialiased">
+                <ThemeProvider>
+                    <LayoutContent>{children}</LayoutContent>
+                </ThemeProvider>
+            </body>
+        </html>
+    );
 }
