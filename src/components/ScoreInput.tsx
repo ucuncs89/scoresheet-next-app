@@ -1,7 +1,5 @@
 import { memo } from "react";
 import { Box, TextField, Typography, IconButton, InputAdornment } from "@mui/material";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 import { ScoreInputProps } from "@/types/scoresheet";
 import { validateScoreInput } from "@/utils/scoresheet";
 
@@ -56,8 +54,14 @@ export const ScoreInput = memo<ScoreInputProps>(({ playerIdx, playerName, value,
                 InputProps={{
                     endAdornment: (
                         <InputAdornment position="end">
-                            <IconButton aria-label={isNegative ? "Make positive" : "Make negative"} size={isCompact ? "small" : "medium"} onClick={handleToggleSign} edge="end">
-                                {isNegative ? <AddRoundedIcon sx={{ color: "success.main" }} /> : <RemoveRoundedIcon sx={{ color: "error.main" }} />}
+                            <IconButton
+                                aria-label={isNegative ? "Make positive" : "Make negative"}
+                                size={isCompact ? "small" : "medium"}
+                                onClick={handleToggleSign}
+                                edge="end"
+                                sx={{ color: isNegative ? "success.main" : "error.main", fontWeight: 700 }}
+                            >
+                                + / -
                             </IconButton>
                         </InputAdornment>
                     ),
