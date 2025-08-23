@@ -1,10 +1,23 @@
 import { memo } from "react";
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, TextField, Typography, IconButton, InputAdornment } from "@mui/material";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 import { ScoreInputProps } from "@/types/scoresheet";
 import { validateScoreInput } from "@/utils/scoresheet";
 
 export const ScoreInput = memo<ScoreInputProps>(({ playerIdx, playerName, value, onChange, isCompact = false, isRequired = false }) => {
     const hasValue = value?.trim();
+    const trimmed = (value ?? "").trim();
+    const sanitizedForState = trimmed === "" || trimmed === "-" ? "0" : trimmed;
+    const numericValue = Number(sanitizedForState);
+    const isNegative = Number.isFinite(numericValue) && numericValue < 0;
+    const handleToggleSign = () => {
+        const current = (value ?? "").trim();
+        const sanitized = current === "" ? "0" : current === "-" ? "-0" : current;
+        const num = Number(sanitized);
+        const toggled = String(-num);
+        onChange(playerIdx, toggled);
+    };
 
     return (
         <Box sx={{ mb: isCompact ? 1.5 : 2 }}>
@@ -39,6 +52,15 @@ export const ScoreInput = memo<ScoreInputProps>(({ playerIdx, playerName, value,
                 inputProps={{
                     step: "1",
                     inputMode: "numeric",
+                }}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton aria-label={isNegative ? "Make positive" : "Make negative"} size={isCompact ? "small" : "medium"} onClick={handleToggleSign} edge="end">
+                                {isNegative ? <AddRoundedIcon sx={{ color: "success.main" }} /> : <RemoveRoundedIcon sx={{ color: "error.main" }} />}
+                            </IconButton>
+                        </InputAdornment>
+                    ),
                 }}
                 sx={{
                     "& .MuiOutlinedInput-root": {
