@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Fab, useTheme, useMediaQuery } from "@mui/material";
+import { Box, Fab, useMediaQuery, useTheme as useMuiTheme } from "@mui/material";
 import { Menu as MenuIcon } from "@mui/icons-material";
 import { useScoresheet } from "@/hooks/useScoresheet";
 import { GameControls, ScoresheetTable, MobileDrawer } from "@/components";
+import { useTheme as useAppTheme } from "@/components/ThemeProvider";
+import theme from "@/theme/theme";
 
 export default function ScoresheetPage(): React.ReactElement {
     const [showMobileDrawer, setShowMobileDrawer] = useState(false);
@@ -37,8 +39,9 @@ export default function ScoresheetPage(): React.ReactElement {
         setEditingPlayerName,
     } = useScoresheet();
 
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+    const muiTheme = useMuiTheme();
+    const { mode, toggleColorMode } = useAppTheme();
+    const isMobile = useMediaQuery(muiTheme.breakpoints.down("md"));
 
     const handleMobileDrawerClose = () => {
         setShowMobileDrawer(false);
