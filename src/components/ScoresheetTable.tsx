@@ -91,7 +91,17 @@ export const ScoresheetTable = memo<ScoresheetTableProps>(
                                                 </Stack>
                                             </Box>
                                         ) : (
-                                            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0.5 }}>
+                                            <Box 
+                                                sx={{ 
+                                                    display: "flex", 
+                                                    flexDirection: "column", 
+                                                    alignItems: "center", 
+                                                    gap: 0.5,
+                                                    "&:hover .delete-player-btn": {
+                                                        opacity: 1,
+                                                    }
+                                                }}
+                                            >
                                                 <Typography
                                                     variant="body1"
                                                     sx={{
@@ -109,17 +119,23 @@ export const ScoresheetTable = memo<ScoresheetTableProps>(
                                                     {player}
                                                 </Typography>
                                                 <IconButton
+                                                    className="delete-player-btn"
                                                     size="small"
                                                     color="error"
                                                     onClick={() => onDeletePlayer(idx)}
                                                     sx={{
-                                                        opacity: 0,
-                                                        transition: "opacity 0.2s",
-                                                        width: 20,
-                                                        height: 20,
-                                                        "&:hover": { opacity: 1 },
-                                                        ".MuiTableCell-root:hover &": { opacity: 1 },
+                                                        opacity: isMobile ? 0.7 : 0,
+                                                        transition: "opacity 0.2s ease-in-out",
+                                                        width: isMobile ? 28 : 20,
+                                                        height: isMobile ? 28 : 20,
+                                                        "&:hover": { 
+                                                            opacity: 1,
+                                                        },
+                                                        "&:active": {
+                                                            opacity: 1,
+                                                        }
                                                     }}
+                                                    aria-label={`Delete ${player}`}
                                                 >
                                                     <DeleteIcon fontSize="small" />
                                                 </IconButton>
@@ -203,8 +219,24 @@ export const ScoresheetTable = memo<ScoresheetTableProps>(
                                                 px: isMobile ? 0.5 : 2,
                                             }}
                                         >
-                                            <IconButton size="small" color="error" onClick={() => onDeleteRound(rowIdx)} aria-label={`Delete round ${rowIdx + 1}`} sx={{ width: 20, height: 20 }}>
-                                                <DeleteIcon fontSize="small" />
+                                            <IconButton 
+                                                size="small" 
+                                                color="error" 
+                                                onClick={() => onDeleteRound(rowIdx)} 
+                                                aria-label={`Delete round ${rowIdx + 1}`} 
+                                                sx={{ 
+                                                    width: isMobile ? 28 : 20, 
+                                                    height: isMobile ? 28 : 20,
+                                                    opacity: isMobile ? 0.7 : 1,
+                                                    "&:hover": {
+                                                        opacity: 1,
+                                                    },
+                                                    "&:active": {
+                                                        opacity: 1,
+                                                    }
+                                                }}
+                                            >
+                                                <DeleteIcon fontSize={isMobile ? "medium" : "small"} />
                                             </IconButton>
                                         </TableCell>
                                     </TableRow>

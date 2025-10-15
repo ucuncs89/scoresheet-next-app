@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 type ThemeMode = 'light' | 'dark';
 
@@ -8,9 +9,15 @@ interface ThemeState {
   setMode: (mode: ThemeMode) => void;
 }
 
-// Simplified version without persist middleware for now
-export const useThemeStore = create<ThemeState>((set) => ({
-  mode: 'light',
-  toggleColorMode: () => set((state) => ({ mode: state.mode === 'light' ? 'dark' : 'light' })),
-  setMode: (mode: ThemeMode) => set({ mode }),
-}));
+export const useThemeStore = create<ThemeState>()(
+  persist(
+    (set) => ({
+      mode: 'dark', // Default to dark mode
+      toggleColorMode: () => set((state) => ({ mode: state.mode === 'light' ? 'dark' : 'light' })),
+      setMode: (mode: ThemeMode) => set({ mode }),
+    }),
+    {
+      name: 'theme-storage',
+    }
+  )
+);

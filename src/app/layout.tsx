@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Typography, Container, Box } from "@mui/material";
 import ThemeProvider from "@/components/ThemeProvider";
+import ThemeToggleButton from "@/components/ThemeToggleButton";
 
 export const metadata: Metadata = {
     title: "Scoresheet",
@@ -21,18 +22,24 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 }}
             >
                 <Container maxWidth="xl">
-                    <Typography
-                        variant="h5"
-                        component="h1"
-                        align="center"
-                        sx={{
-                            fontWeight: 700,
-                            color: "primary.main",
-                            letterSpacing: 0.5,
-                        }}
-                    >
-                        Scoresheet
-                    </Typography>
+                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                        <Box sx={{ flex: 1 }} />
+                        <Typography
+                            variant="h5"
+                            component="h1"
+                            align="center"
+                            sx={{
+                                fontWeight: 700,
+                                color: "primary.main",
+                                letterSpacing: 0.5,
+                            }}
+                        >
+                            Scoresheet
+                        </Typography>
+                        <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
+                            <ThemeToggleButton />
+                        </Box>
+                    </Box>
                 </Container>
             </Box>
 

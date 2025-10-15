@@ -9,22 +9,15 @@ interface ThemeProviderProps {
 }
 
 export default function ThemeProvider({ children }: ThemeProviderProps): React.ReactElement {
-    const { mode, setMode, toggleColorMode } = useThemeStore();
+    const { mode } = useThemeStore();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
-        // Check system preference if mode is not set yet
-        if (mode === 'light') {
-            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-            if (prefersDark) {
-                setMode("dark");
-            }
-        }
-    }, [mode, setMode]);
+    }, []);
 
-    // Prevent hydration mismatch by using light theme initially
-    const currentTheme = mounted && mode === "dark" ? darkTheme : theme;
+    // Prevent hydration mismatch by using dark theme initially (since dark is default)
+    const currentTheme = mounted && mode === "light" ? theme : darkTheme;
 
     return (
         <MUIThemeProvider theme={currentTheme}>
